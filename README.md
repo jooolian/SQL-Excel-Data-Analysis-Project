@@ -1,0 +1,1 @@
+In this project, I formulated several questions I wanted to answer. I then queried a database using SQL and then did the analysis and created a presentation to visualize the findings using Excel for both.

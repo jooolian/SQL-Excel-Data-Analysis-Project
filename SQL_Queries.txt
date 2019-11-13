@@ -1,0 +1,71 @@
+/*Query 1 - query used for the first insight*/
+
+SELECT
+  A.Name,
+  COUNT(T.TrackId) No_of_Tracks
+FROM Artist A
+JOIN Album AL
+  ON A.ArtistId = AL.ArtistId
+JOIN Track T
+  ON AL.AlbumId = T.AlbumId
+JOIN Genre G
+  ON T.GenreId = G.GenreId
+WHERE A.Name <> 'Various Artists'
+GROUP BY A.Name
+ORDER BY No_of_Tracks DESC
+LIMIT 10
+
+/*Query 2 - query used for the second insight*/
+
+SELECT
+  SUM(IL.quantity) Number_of_Tracks,
+  C.Country
+FROM InvoiceLine IL
+JOIN Invoice I
+  ON IL.InvoiceId = I.InvoiceId
+JOIN Customer C
+  ON I.CustomerId = C.CustomerId
+GROUP BY C.Country
+ORDER BY Number_of_Tracks DESC
+LIMIT 6
+
+/*Query 3 - query used for the third insight*/
+
+SELECT
+  C.Country,
+  ROUND(SUM(IL.Quantity * IL.UnitPrice)) AmountSpent
+FROM InvoiceLine IL
+JOIN Invoice I
+  ON IL.InvoiceId = I.InvoiceId
+JOIN Customer C
+  ON I.CustomerId = C.CustomerId
+GROUP BY C.Country
+ORDER BY AmountSpent DESC
+LIMIT 6
+
+/*Query 4 - query used for the fourth insight*/
+
+SELECT Artist || ' - ' || Song, Number_of_times_sold
+FROM 
+(SELECT
+  A.ArtistId, A.Name Artist, T.Name Song, 
+  SUM(IL.Quantity) Number_of_times_sold
+FROM Artist A
+JOIN Album AL
+  ON A.ArtistId = AL.ArtistId
+JOIN Track T
+  ON AL.AlbumId = T.AlbumId
+JOIN InvoiceLine IL
+  ON T.TrackId = IL.TrackId
+GROUP BY A.ArtistId, T.Name
+ORDER BY Number_of_times_sold DESC
+LIMIT 10) sub
+ORDER BY Number_of_times_sold DESC
+
+/*I just want to note that the goal of my fourth query is 
+to find the top-selling songs, not tracks. Also I want to 
+note that I am aware that if an artist has two different 
+songs with the same name in the store, my query will combine them.*/
+
+
+
